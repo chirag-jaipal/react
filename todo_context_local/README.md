@@ -1,16 +1,124 @@
-# React + Vite
+# Todo App with React Context API
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+A small, responsive todo application built with React, Vite, Tailwind CSS, and the Context API. Todos are managed in the top-level `App` component, shared with child components through context, and persisted in the browser's local storage.
 
-Currently, two official plugins are available:
+## Features
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+- Add new todo items
+- Mark todos as complete or incomplete
+- Edit active todos
+- Delete todos
+- Restore todos after refreshing the page
+- Display a task count and an empty-list state
+- Responsive dark interface with Tailwind CSS
 
-## React Compiler
+## Tech stack
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- React 19
+- Vite
+- Tailwind CSS 4
+- React Context API
+- Browser `localStorage`
 
-## Expanding the ESLint configuration
+## Getting started
 
-If you are developing a production application, we recommend using TypeScript with type-aware lint rules enabled. Check out the [TS template](https://github.com/vitejs/vite/tree/main/packages/create-vite/template-react-ts) for information on how to integrate TypeScript and [`typescript-eslint`](https://typescript-eslint.io) in your project.
+### Prerequisites
+
+- Node.js 18+ and npm, or
+- Bun
+
+### Install dependencies
+
+Using Bun:
+
+```bash
+bun install
+```
+
+Using npm:
+
+```bash
+npm install
+```
+
+### Start the development server
+
+```bash
+bun run dev
+```
+
+Or with npm:
+
+```bash
+npm run dev
+```
+
+Open the local URL printed by Vite in your browser.
+
+## Available scripts
+
+| Command | Description |
+| --- | --- |
+| `npm run dev` | Start the Vite development server |
+| `npm run build` | Create a production build |
+| `npm run lint` | Run ESLint |
+| `npm run preview` | Preview the production build locally |
+
+When using Bun, replace `npm run` with `bun run`.
+
+## How it works
+
+`App.jsx` owns the todo state and exposes these operations through `TodoContextProvider`:
+
+- `createTodo(todo)` adds a new item with a generated ID and `completed: false`
+- `editTodo(id, todo)` updates the text of a matching item
+- `deleteTodo(id)` removes an item
+- `toggleComplete(id)` switches an item's completed state
+
+The app reads the `todos` key from `localStorage` when it mounts. A second effect writes the current todo array back to the same key whenever the state changes.
+
+Each todo has this shape:
+
+```js
+{
+  id: 1710000000000,
+  todo: "Example task",
+  completed: false
+}
+```
+
+## Project structure
+
+```text
+src/
+├── App.jsx
+├── index.css
+├── main.jsx
+├── components/
+│   ├── TodoForm.jsx
+│   ├── TodoItem.jsx
+│   └── index.js
+└── context/
+    ├── TodoContexts.js
+    └── index.js
+```
+
+### Components
+
+- `App.jsx` manages state, persistence, and page layout.
+- `TodoForm.jsx` handles controlled input and creates todos through context.
+- `TodoItem.jsx` renders a todo and handles editing, completion, and deletion.
+- `TodoContexts.js` defines the context and the `useTodo` hook.
+
+## Data persistence
+
+Todos are stored only in the current browser and are not synchronized with a server or other devices. To clear the saved list, run this in the browser console:
+
+```js
+localStorage.removeItem("todos");
+```
+
+## Notes
+
+- Completed todos cannot be edited until they are marked active again.
+- The project does not include a backend, authentication, or multi-user storage.
